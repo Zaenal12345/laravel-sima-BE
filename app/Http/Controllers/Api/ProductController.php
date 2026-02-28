@@ -57,7 +57,7 @@ class ProductController extends BaseController
                 'merk_id' => 'required|exists:merks,id',
                 'supplier_id' => 'required|exists:suppliers,id',
                 'basic_price' => 'required|numeric',
-                'seller_price' => 'nullable|numeric',
+                'selling_price' => 'nullable|numeric',
                 'status' => 'required|in:active,inactive',
                 'description' => 'nullable|string',
                 'image' => 'nullable|image|max:2048',
