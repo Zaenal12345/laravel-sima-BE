@@ -41,6 +41,7 @@ class ProductController extends BaseController
                 $query->where('status', $status);
             }
 
+
             $products = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
             return $this->paginated($products, 'Products retrieved successfully.');
@@ -172,6 +173,47 @@ class ProductController extends BaseController
             $product->delete();
 
             return $this->success('Product deleted successfully.');
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage());
+        }
+    }
+
+    public function getVariants($productId) {
+        try {
+            $product = Product::find($productId);
+            if (!$product) {
+                return $this->notFound('Product not found.');
+            }
+
+            $variants = Variant::where('product_id', $productId)->get();
+
+            return $this->success('Variants retrieved successfully.', $variants);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage());
+        }
+    }
+
+    public function addVariant(Request $request, $productId) {
+        try {
+            $product = Product::find($productId);
+            if (!$product) {
+                return $this->notFound('Product not found.');
+            }
+
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'additional_price' => 'nullable|numeric',
+                'stock' => 'nullable|integer|min:0',
+            ]);
+
+            $variant = new Variant();
+            $variant->product_id = $productId;
+            $variant->name = $validatedData['name'];
+            $variant->additional_price = $validatedData['additional_price'] ?? 0;
+            $variant->stock = $validatedData['stock'] ?? 0;
+            $variant->save();
+
+            return $this->success('Variant added successfully.', $variant);
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());
         }

@@ -48,7 +48,8 @@ class CategoryController extends BaseController
     {
         $validated = $request->validate([
             'name' => 'required|unique:categories',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
+            'description' => 'nullable|string'
         ]);
 
         try {
@@ -63,7 +64,8 @@ class CategoryController extends BaseController
     {
         $validated = $request->validate([
             'name' => 'required|unique:categories,name,'.$id,
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
+            'description' => 'nullable|string'
         ]);
 
         try {

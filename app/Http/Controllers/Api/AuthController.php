@@ -26,8 +26,17 @@ class AuthController extends BaseController
             $user = Auth::user();
             $token = $user->createToken('auth_token'.time())->plainTextToken;
 
+            // Load roles with permissions
+            $user->load('roles.permissions');
+
             return $this->success('Login successful', [
-                'user' => $user,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->getRolesArray(),
+                    'permissions' => $user->getPermissionsArray(),
+                ],
                 'token' => $token,
             ]);
         } catch (\Throwable $th) {
